@@ -1909,8 +1909,8 @@ Transform:
   m_GameObject: {fileID: 5530425236165073671}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 159349225435193947}
   - {fileID: 2198275561027356015}
@@ -1973,9 +1973,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gunContainer: {fileID: 1343902419146427593}
-  MoveSpeed: 2
+  MoveSpeed: 9
   RotationSpeed: 1
-  SprintSpeed: 5.335
+  SprintSpeed: 6
   RotationSmoothTime: 0.12
   SpeedChangeRate: 10
   LandingAudioClip: {fileID: 8300000, guid: ff697d3070687ce4583faa0561a145a2, type: 3}
@@ -1991,10 +1991,10 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 274649b0e221539409070ebf6c18918b, type: 3}
   - {fileID: 8300000, guid: a3194b8bbc96ef84fab1f98f4b7dae3e, type: 3}
   FootstepAudioVolume: 0.3
-  JumpHeight: 1.2
-  Gravity: -15
-  JumpTimeout: 0.3
-  FallTimeout: 0.15
+  JumpHeight: 1.9
+  Gravity: -32.71
+  JumpTimeout: 0
+  FallTimeout: 0.1
   Grounded: 1
   GroundedOffset: -0.14
   GroundedRadius: 0.28
