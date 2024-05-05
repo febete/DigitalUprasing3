@@ -1,62 +1,35 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-[InitializeOnLoad]
 public class EMM_AddCanvases : EditorWindow{
 
-    public static bool showWindow = true;
-    public static void OpenWindow()
-    {
-        if(showWindow)
-        {
-            GetWindow<EMM_AddCanvases>("Easy Main Menu");
-            GetWindow<EMM_AddCanvases>("Easy Main Menu").maxSize = new Vector2(265, 350);
-            GetWindow<EMM_AddCanvases>("Easy Main Menu").minSize = new Vector2(264, 350);
-
-            showWindow = false;
-        }
-    }
-
-    [MenuItem("EMM/Support!", false, 1)]
-    public static void BuyFullVersion()
-    {
-        GetWindow<EMM_AddCanvases>("Easy Main Menu");
-        GetWindow<EMM_AddCanvases>("Easy Main Menu").maxSize = new Vector2(265, 350);
-        GetWindow<EMM_AddCanvases>("Easy Main Menu").minSize = new Vector2(264, 350);
-
-    }
-
-    void OnGUI()
-    {
-        //EMM Logo
-        Texture t = (Texture) Resources.Load("EMM_img");
-
-        if (GUILayout.Button(t))
-        {
-            Application.OpenURL("http://u3d.as/W3m");
-        }
-
-        GUILayout.Label("", GUI.skin.horizontalSlider);
-
-        EditorGUILayout.HelpBox("Hi guys, If you liked this demo or you used this in any of your games, " +
-                                    "then consider buying the full version from here!", MessageType.Info);
-
-        if (GUILayout.Button("Buy Full Version [Asset Store]"))
-        {
-            Application.OpenURL("http://u3d.as/W3m");
-        }
-        if (GUILayout.Button("Buy Full Version [Sellfy Store - 20% OFF]"))
-        {
-            Application.OpenURL("https://sellfy.com/p/5ujr/");
-        }
-
-
-    }
 
     [MenuItem("EMM/Add/Loading Canvas &#L", false)]
     public static void AddLoadingCanvas()
     {
-        Debug.Log("This feature is in full version..");
+        //instantiate ui canvas
+        GameObject loadingCanvas = Instantiate(Resources.Load("Prefabs/loadingCanvas")) as GameObject;
+        //rename it
+        loadingCanvas.name = "Loading Canvas";
+
+        //see if the scene already contains a cam
+        Camera cam = FindObjectOfType<Camera>();
+        if (!cam)
+        {
+            //if no cam
+            GameObject sceneCam = new GameObject();
+            sceneCam.AddComponent<Camera>();
+            sceneCam.AddComponent<AudioListener>();
+            sceneCam.name = "Scene Camera";
+
+        }
+
+        //instantiate EAU
+        GameObject EAU = Instantiate(Resources.Load("Prefabs/EasyAudioUtility")) as GameObject;
+        //rename it
+        EAU.name = "EasyAudioUtility";
+
+        Debug.Log("Loading Canvas Created!");
     }
 
     [MenuItem("EMM/Add/Main Menu Canvas  &#M", false)]
@@ -66,6 +39,11 @@ public class EMM_AddCanvases : EditorWindow{
         GameObject mainMenu = Instantiate(Resources.Load("Prefabs/MainMenu")) as GameObject;
         //rename it
         mainMenu.name = "Main Menu";
+
+        //instantiate EAU
+        GameObject EIU = Instantiate(Resources.Load("Prefabs/EasyInputUtility")) as GameObject;
+        //rename it
+        EIU.name = "EasyInputUtility";
 
         GameObject bgImg = Instantiate(Resources.Load("Prefabs/BackgroundImageCamera")) as GameObject;
         //rename it
@@ -77,27 +55,44 @@ public class EMM_AddCanvases : EditorWindow{
     [MenuItem("EMM/Add/Gameplay UI &#G", false)]
     public static void AddGameplayUI() {
 
-        Debug.Log("This feature is in full version..");
+        //instantiate ui canvas
+        GameObject gameplayUI = Instantiate(Resources.Load("Prefabs/Gameplay UI")) as GameObject;
+        //rename it
+        gameplayUI.name = "Gameplay UI";
+
+        Debug.Log("Gameplay UI Created!");
 
     }
 
     [MenuItem("EMM/Add/Save Game Trigger &#T", false)]
     public static void AddSaveGameTrigger()
     {
-        Debug.Log("This feature is in full version..");
+        //instantiate object
+        GameObject saveGameTrigger = Instantiate(Resources.Load("Prefabs/SaveGameTrigger")) as GameObject;
+        //rename it
+        saveGameTrigger.name = "SaveGameTrigger";
+
+        Debug.Log("Save game Trigger Created!");
 
     }
 
     [MenuItem("EMM/Demo/Simple Cube Character", false)]
     public static void AddSimpleCube()
     {
-        Debug.Log("This feature is in full version..");
+        //instantiate object
+        GameObject cube = Instantiate(Resources.Load("Prefabs/SimpleCube")) as GameObject;
+        //rename it
+        cube.name = "Sample Cube";
+    
     }
 
     [MenuItem("EMM/Demo/Sample Maze Scene", false)]
     public static void AddSampleMazeScene()
     {
-        Debug.Log("This feature is in full version..");
+        //instantiate maze scene
+        GameObject MazeScene = Instantiate(Resources.Load("Prefabs/MazeScene")) as GameObject;
+        //rename it
+        MazeScene.name = "MazeScene";
     }
 
     [MenuItem("EMM/Clear Game Data &#X", false)]
@@ -106,6 +101,4 @@ public class EMM_AddCanvases : EditorWindow{
         PlayerPrefs.DeleteAll();
         Debug.Log("Game Data Cleared!");
     }
-
-    
 }

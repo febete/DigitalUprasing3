@@ -37,7 +37,7 @@ public class LaunchManager : MonoBehaviourPunCallbacks
         {
             PhotonNetwork.ConnectUsingSettings();
             CanvasManager.instance.ConnectionStatusPanel.SetActive(true);
-            CanvasManager.instance.EnterGamePanel.SetActive(false);
+            
 
         }
     }    
@@ -46,6 +46,7 @@ public class LaunchManager : MonoBehaviourPunCallbacks
     public void joinRandomRoom()
     {
         //Photon will try to find a room to join if there is at least one room
+        CanvasManager.instance.ConnectionStatusPanel.SetActive(true);
         PhotonNetwork.JoinRandomRoom();
     }
 
@@ -62,8 +63,9 @@ public class LaunchManager : MonoBehaviourPunCallbacks
     public override void OnConnectedToMaster()
     {
        Debug.Log(PhotonNetwork.NickName + " Connected to Photon Server");
-       CanvasManager.instance.LobbyPanel.SetActive(true);
+       //CanvasManager.instance.LobbyPanel.SetActive(true);
        CanvasManager.instance.ConnectionStatusPanel.SetActive(false);
+       CanvasManager.instance.EnterNamePanel.SetActive(false);
     }
 
     //this method will call when we have the internet connection or before onConnectedToMaster method

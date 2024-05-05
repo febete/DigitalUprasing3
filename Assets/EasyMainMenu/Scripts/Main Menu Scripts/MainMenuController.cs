@@ -13,17 +13,30 @@ public class MainMenuController : MonoBehaviour {
     [Header("Options Panel")]
     public GameObject MainOptionsPanel;
     public GameObject StartGameOptionsPanel;
+    public GameObject ReconfigPanel;
     public GameObject GamePanel;
     public GameObject ControlsPanel;
     public GameObject GfxPanel;
     public GameObject LoadGamePanel;
+
+
+    private void Awake()
+    {
+        if (!EasyAudioUtility.instance)
+            Instantiate(Resources.Load("Prefabs/EasyAudioUtility"));
+    
+    }
 
     // Use this for initialization
     void Start () {
         anim = GetComponent<Animator>();
 
         //new key
+    #if !EMM_ES2
         PlayerPrefs.SetInt("quickSaveSlot", quickSaveSlotID);
+    #else
+        ES2.Save(quickSaveSlotID, "quickSaveSlot");
+    #endif
     }
 
     #region Open Different panels
@@ -33,6 +46,7 @@ public class MainMenuController : MonoBehaviour {
         //enable respective panel
         MainOptionsPanel.SetActive(true);
         StartGameOptionsPanel.SetActive(false);
+        ReconfigPanel.SetActive(false);
 
         //play anim for opening main options panel
         anim.Play("buttonTweenAnims_on");
@@ -50,6 +64,7 @@ public class MainMenuController : MonoBehaviour {
         //enable respective panel
         MainOptionsPanel.SetActive(false);
         StartGameOptionsPanel.SetActive(true);
+        ReconfigPanel.SetActive(false);
 
         //play anim for opening main options panel
         anim.Play("buttonTweenAnims_on");
@@ -60,6 +75,21 @@ public class MainMenuController : MonoBehaviour {
         //enable BLUR
         //Camera.main.GetComponent<Animator>().Play("BlurOn");
         
+    }
+
+    public void openReconfig()
+    {
+        //enable respective panel
+        MainOptionsPanel.SetActive(false);
+        StartGameOptionsPanel.SetActive(false);
+        ReconfigPanel.SetActive(true);
+
+        //play anim for opening main options panel
+        anim.Play("OptTweenAnim_off");
+
+        //play click sfx
+        playClickSound();
+
     }
 
     public void openOptions_Game()
@@ -126,11 +156,34 @@ public class MainMenuController : MonoBehaviour {
 
     public void newGame()
     {
-        if (!string.IsNullOrEmpty(newGameSceneName))
-            SceneManager.LoadScene(newGameSceneName);
+        //if we don't have this component
+        if (!GetComponent<LevelSelectManager>())
+        {
+            //loads a specific scene
+            #if !EMM_ES2
+            PlayerPrefs.SetString("sceneToLoad", newGameSceneName);
+            #else
+            ES2.Save(newGameSceneName, "sceneToLoad");
+            #endif
+        
+            //load level via fader
+            Fader fader = FindObjectOfType<Fader>();
+            fader.FadeIntoLevel("LoadingScreen");
+
+        }
+        //open the level select screen
         else
-            Debug.Log("Please write a scene name in the 'newGameSceneName' field of the Main Menu Script and don't forget to " +
-                "add that scene in the Build Settings!");
+        {
+            GetComponent<LevelSelectManager>().openLevelSelect();
+        }
+
+        //delete slot id
+        #if !EMM_ES2
+        PlayerPrefs.DeleteKey("slotLoaded_");
+        #else
+        ES2.Delete("slotLoaded_");
+        #endif
+
     }
     #endregion
 
@@ -162,16 +215,16 @@ public class MainMenuController : MonoBehaviour {
     {
         Application.Quit();
     }
-    #endregion
+#endregion
 
     #region Sounds
     public void playHoverClip()
     {
-       
+        EasyAudioUtility.instance.Play("Hover");
     }
 
     void playClickSound() {
-
+        EasyAudioUtility.instance.Play("Click");
     }
 
 

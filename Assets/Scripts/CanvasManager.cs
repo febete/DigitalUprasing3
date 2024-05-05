@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CanvasManager : MonoBehaviour
 {
-    public GameObject EnterGamePanel;
+    public GameObject EnterNamePanel;
     public GameObject ConnectionStatusPanel;
     public GameObject LobbyPanel;
 
@@ -20,7 +20,7 @@ public class CanvasManager : MonoBehaviour
 
     void Start()
     {
-        EnterGamePanel.SetActive(true);
+        EnterNamePanel.SetActive(true);
         ConnectionStatusPanel.SetActive(false);
         LobbyPanel.SetActive(false);
 

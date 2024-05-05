@@ -6,10 +6,10 @@ using UnityEditor;
 [CustomEditor(typeof(MainMenuController))]
 public class MainMenuControllerEditor : Editor {
 
+    bool showHelp;
+
     public override void OnInspectorGUI()
     {
-        EMM_AddCanvases.OpenWindow();
-
         EditorGUILayout.BeginVertical(EditorStyles.helpBox);
 
         EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
@@ -19,36 +19,35 @@ public class MainMenuControllerEditor : Editor {
         GUIStyle bSKin = new GUIStyle("box");
         bSKin.normal.textColor = Color.green;
 
-       
+        if (GUILayout.Button("[?]", bSKin))
+        {
+            showHelp = !showHelp;
+        }
+
         EditorGUILayout.EndHorizontal();
 
-        
+        if (showHelp)
+        {
             EditorGUILayout.HelpBox("The Controller script which will be controlling the whole menu system behaviour.\n\n" +
-                                    "This is just a demo version to showcase what you can expect" +
-                                    " in the paid version. \n\n" +
-                                    "If you liked this demo or you used this in any of your games, " +
-                                    "then consider buying the full version from here!", MessageType.Info);
+                                    "New Game Scene Name : Type the game scene name you want to load, " +
+                                    "however this field will be overriden " +
+                                    "if you are opting to use Level Select System. \n\n" +
+                                    "Quick Save Slot ID : Define which slot you want to use " +
+                                    "while quicksaving. Please see the below video for better understanding!", MessageType.Info);
 
-            if (GUILayout.Button("Buy Full Version [Asset Store]"))
+            if (GUILayout.Button("Quick Save Tutorial Video!"))
             {
-                Application.OpenURL("https://www.assetstore.unity3d.com/#!/content/98746");
-            }
-            if (GUILayout.Button("Buy Full Version [Sellfy Store - 20% OFF]"))
-            {
-                Application.OpenURL("https://sellfy.com/p/5ujr/");
+                Application.OpenURL("https://youtu.be/0LRwJ4BpcJA");
             }
 
-            EditorGUILayout.HelpBox("Your support is all what I am counting on! For further development of this Asset please support us " +
-                                    "by buying it!\n\n" +
-                                    "Thanks\n" +
-                                    "Hamzah\n" +
-                                    "Support : walledcityinfotech@gmail.com", MessageType.Info);
+            EditorGUILayout.HelpBox("All the fields under the 'Options Panel' are the UI References.\n" +
+                                    "You can select them and I highly recommend you to " +
+                                    "modify them to make them as awesome as possible! ;)", MessageType.Info);
+        }
 
         base.OnInspectorGUI();
 
         EditorGUILayout.EndVertical();
-
-        
     }
 
 }
