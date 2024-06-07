@@ -159,6 +159,10 @@ public class PlayfabManager : MonoBehaviour
                             {
                                 field.SetValue(dbKeys[key.Key], int.Parse(value));
                             }
+                            else if (field.FieldType == typeof(float))
+                            {
+                                field.SetValue(dbKeys[key.Key], float.Parse(value));
+                            }
                         }
                     }
                 }

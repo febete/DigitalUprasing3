@@ -7,10 +7,7 @@ public class PlayerProperty : DBSyncSynchronizer
     public static PlayerProperty instance;
 
     [SyncWithDatabase]
-    public int playerLevel;
-
-    [SyncWithDatabase]
-    public int playerRank;
+    public float playerLevel;
 
     private void Awake()
     {

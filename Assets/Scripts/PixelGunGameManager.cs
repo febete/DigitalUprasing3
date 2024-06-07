@@ -5,6 +5,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.SceneManagement;
 using TMPro;
+using Unity.VisualScripting;
 
 public class PixelGunGameManager : MonoBehaviourPunCallbacks
 {
@@ -63,6 +64,8 @@ public class PixelGunGameManager : MonoBehaviourPunCallbacks
             if (i == 1) playerName2.text = PhotonNetwork.CurrentRoom.Players[2].NickName;
             i++;
         }
+
+        PlayerProperty.instance.playerLevel += 0.5f;
 
     }
 
@@ -128,5 +131,12 @@ public class PixelGunGameManager : MonoBehaviourPunCallbacks
     public void QuitMatch()
     {
         Application.Quit();
+    }
+
+
+
+    private void OnApplicationQuit()
+    {
+        PlayerProperty.instance.SaveData();
     }
 }

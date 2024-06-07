@@ -115,7 +115,7 @@ public class CanvasManager : MonoBehaviour
 
     public void UpdateCollectedWoodText()
     {
-        playerWoodCount.text = PlayerProperty.instance.playerLevel.ToString();
+        playerWoodCount.text = ((int)PlayerProperty.instance.playerLevel).ToString();
     }
 
 
