@@ -4,6 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class PixelGunGameManager : MonoBehaviourPunCallbacks
 {
@@ -11,11 +12,20 @@ public class PixelGunGameManager : MonoBehaviourPunCallbacks
     GameObject playerPrefab;
 
     public static PixelGunGameManager instance;    //singleton design pattern
+    public TMP_Text playerName1, playerName2;
+    public TMP_Text player1Score, player2Score;
+
+    bool isSettingScreenOpen;
+    public GameObject settingScreen;
+
+    public TMP_Text hpText, bulletText;
 
 
 
-    private void Awake() {
-        if(instance != null)
+
+    private void Awake()
+    {
+        if (instance != null)
         {
             Destroy(this.gameObject);
         }
@@ -32,47 +42,91 @@ public class PixelGunGameManager : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsConnected)
         {
             PhotonNetwork.AutomaticallySyncScene = true;
-            
-            if(playerPrefab != null)
+
+
+
+            if (playerPrefab != null)
             {
-                int randomPoint = Random.Range(-20,20);
-                PhotonNetwork.Instantiate(playerPrefab.name, new Vector3(randomPoint,5,randomPoint), Quaternion.identity ); 
+                float randomPointx = Random.Range(-5f, 5f);
+                float randomPointz = Random.Range(0f, -10f);
+                PhotonNetwork.Instantiate(playerPrefab.name, new Vector3(randomPointx, 5, randomPointz), Quaternion.identity);
                 Debug.Log("*-*-Instantiate");
             }
-            
+
+        }
+
+
+        int i = 0;
+        foreach (Player player in PhotonNetwork.PlayerList)
+        {
+            if (i == 0) playerName1.text = player.NickName;
+            if (i == 1) playerName2.text = PhotonNetwork.CurrentRoom.Players[2].NickName;
+            i++;
+        }
+
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (isSettingScreenOpen)
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                settingScreen.gameObject.SetActive(false);
+                isSettingScreenOpen = false;
+            }
+            else
+            {
+                Cursor.lockState = CursorLockMode.None;
+                settingScreen.gameObject.SetActive(true);
+                isSettingScreenOpen = true;
+
+
+            }
         }
     }
 
 
-    // Update is called once per frame
-    void Update()
+    public void CloseSettingScreen()
     {
-        
+        Cursor.lockState = CursorLockMode.Locked;
+        settingScreen.gameObject.SetActive(false);
+        isSettingScreenOpen = false;
+
     }
+
+
 
 
 
 
     public override void OnJoinedRoom()
     {
-        Debug.Log(PhotonNetwork.NickName+ " joined to --"+ PhotonNetwork.CurrentRoom.Name);  
+        Debug.Log(PhotonNetwork.NickName + " joined to --" + PhotonNetwork.CurrentRoom.Name);
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
-        Debug.Log(newPlayer.NickName+ " joined to --"+ PhotonNetwork.CurrentRoom.Name + " "+ PhotonNetwork.CurrentRoom.PlayerCount );
+        Debug.Log(newPlayer.NickName + " joined to --" + PhotonNetwork.CurrentRoom.Name + " " + PhotonNetwork.CurrentRoom.PlayerCount);
     }
 
 
 
     public override void OnLeftRoom()
     {
-        SceneManager.LoadScene("GameLauncherScene");
+        SceneManager.LoadScene("LaunchScene");
     }
 
 
     public void LeaveRoom()
     {
+        PlayerProperty.instance.SaveData();
         PhotonNetwork.LeaveRoom();
+    }
+
+    public void QuitMatch()
+    {
+        Application.Quit();
     }
 }

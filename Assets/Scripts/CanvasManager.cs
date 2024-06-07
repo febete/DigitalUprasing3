@@ -1,34 +1,134 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Photon.Pun;
+using PlayFab;
+using TMPro;
+using Unity.VisualScripting.AssemblyQualifiedNameParser;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CanvasManager : MonoBehaviour
 {
-    public GameObject EnterNamePanel;
-    public GameObject ConnectionStatusPanel;
-    public GameObject LobbyPanel;
-
     public static CanvasManager instance;
+    public static Action onLaunchScreenOpenedWithoutLoginAction;
 
-    private void Awake() {
 
-        if(instance != null) Destroy (gameObject);
+    [Header("GameObjects")]
+
+    [SerializeField] public GameObject LoadingBar;
+    [SerializeField] public GameObject AuthPanel;
+    [SerializeField] public GameObject MatchmakingPanel;
+    [SerializeField] public GameObject playerNamePanel;
+    [SerializeField] public GameObject WoodPanel;
+    [SerializeField] public GameObject startMatchmakingButton, cancelMatcmakingButton, startSingleGameButton;
+
+    [Header("Texts")]
+
+    [SerializeField] public TMP_Text L_mailText;
+    [SerializeField] public TMP_Text L_passwordText;
+    [SerializeField] public TMP_Text R_mailText;
+    [SerializeField] public TMP_Text R_playerNameText;
+    [SerializeField] public TMP_Text R_passwordText;
+    [SerializeField] public TMP_Text statusText;
+    [SerializeField] public TMP_Text playerDisplayName;
+    [SerializeField] public TMP_Text playerWoodCount;
+    [SerializeField] public TMP_Text player1Name;
+    [SerializeField] public TMP_Text player2Name;
+    [SerializeField] public TMP_Text matchmakingTimer;
+    [SerializeField] public TMP_Text launchCountText;
+
+    [Header("Toggles")]
+    [SerializeField] public Toggle womanToggle;
+    [SerializeField] public Toggle manToggle;
+
+
+
+    private void Awake()
+    {
+        if (instance != null) Destroy(gameObject);
         else instance = this;
-        
     }
 
+    private void OnEnable()
+    {
+        PlayfabManager.onDataReceivedAction += CloseAuthPanel;
+        PlayfabManager.onDataReceivedAction += UpdateCollectedWoodText;
+        onLaunchScreenOpenedWithoutLoginAction += OpenProfilePanel;
+        onLaunchScreenOpenedWithoutLoginAction += UpdateCollectedWoodText;
+    }
+
+    private void OnDisable()
+    {
+        PlayfabManager.onDataReceivedAction -= CloseAuthPanel;
+        PlayfabManager.onDataReceivedAction -= UpdateCollectedWoodText;
+        onLaunchScreenOpenedWithoutLoginAction -= OpenProfilePanel;
+        onLaunchScreenOpenedWithoutLoginAction -= UpdateCollectedWoodText;
+
+    }
 
     void Start()
     {
-        EnterNamePanel.SetActive(true);
-        ConnectionStatusPanel.SetActive(false);
-        LobbyPanel.SetActive(false);
-
+        LoadingBar.SetActive(false);
         Cursor.lockState = CursorLockMode.None;
+
+        if (!PlayFabClientAPI.IsClientLoggedIn())
+        {
+            AuthPanel.SetActive(true);
+        }
+        else
+        {
+            onLaunchScreenOpenedWithoutLoginAction?.Invoke();
+        }
     }
 
-    public void JoinRandomRoom(){
-        LaunchManager.instance.joinRandomRoom();
+    public void StartSingleGame()
+    {
+        LaunchManager.instance.StartCoroutine(nameof(LaunchManager.instance.CreateSingleRoom));
+        startMatchmakingButton.GetComponent<Button>().interactable = false;
+        cancelMatcmakingButton.GetComponent<Button>().interactable = false;
+    }
+
+    public void CreateMatchmakingTicket()
+    {
+        LaunchManager.instance.CreateMatchmakingTicket();
+        matchmakingTimer.gameObject.SetActive(true);
+        cancelMatcmakingButton.SetActive(true);
+        startMatchmakingButton.SetActive(false);
+        startSingleGameButton.GetComponent<Button>().interactable = false;
+    }
+
+    public void CancelMatchmakingTicket()
+    {
+        LaunchManager.instance.CancelMatchmakingTicket();
+        matchmakingTimer.gameObject.SetActive(false);
+        cancelMatcmakingButton.SetActive(false);
+        startMatchmakingButton.SetActive(true);
+        startSingleGameButton.GetComponent<Button>().interactable = true;
+    }
+
+    public void CloseAuthPanel()
+    {
+        LoadingBar.SetActive(false);
+        AuthPanel.SetActive(false);
+    }
+
+    public void UpdateCollectedWoodText()
+    {
+        playerWoodCount.text = PlayerProperty.instance.playerLevel.ToString();
+    }
+
+
+    public void OpenProfilePanel()
+    {
+        playerDisplayName.text = PlayfabManager.displayName;
+        playerNamePanel.SetActive(true);
+        WoodPanel.SetActive(true);
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
     }
 
 }
